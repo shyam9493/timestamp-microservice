@@ -25,6 +25,30 @@ app.get("/api/hello", function (req, res) {
 });
 
 
+app.get('/api/:date?', (req, res) => {
+  let { date } = req.params;
+  
+  let parsedDate;
+
+  if (!date) {
+    parsedDate = new Date();
+  } else if (!isNaN(date)) {
+    // Unix timestamp (in milliseconds)
+    parsedDate = new Date(parseInt(date));
+  } else {
+    parsedDate = new Date(date);
+  }
+
+  if (parsedDate.toString() === 'Invalid Date') {
+    return res.json({ error: 'Invalid Date' });
+  }
+
+  res.json({
+    unix: parsedDate.getTime(),
+    utc: parsedDate.toUTCString(),
+  });
+});
+
 
 // Listen on port set in environment variable or default to 3000
 var listener = app.listen(process.env.PORT || 3000, function () {
